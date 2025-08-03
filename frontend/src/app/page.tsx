@@ -1,11 +1,21 @@
 import Link from 'next/link'
 import { client } from '@/sanity/client'
+import { ThemeToggleButton } from '@/components/ThemeToggleButton'
+import imageUrlBuilder from '@sanity/image-url'
+
+const builder = imageUrlBuilder(client)
+
+function urlFor(source: any) {
+  return builder.image(source)
+}
 
 async function getPosts() {
   const posts = await client.fetch(`*[_type == "post"] | order(publishedAt desc) {
     title,
     slug,
-    publishedAt,
+    "publishedAt": publishedAt,
+    excerpt,
+    mainImage
   }`)
   return posts
 }
@@ -14,28 +24,44 @@ export default async function Home() {
   const posts = await getPosts()
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        {
-          posts.map((post: any) => (
-            <Link
-              key={post.slug.current}
-              href={`/post/${post.slug.current}`}
-              className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            >
-              <h2 className={`mb-3 text-2xl font-semibold`}>
-                {post.title}{' '}
-                <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                  -&gt;
-                </span>
-              </h2>
-              <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-                {new Date(post.publishedAt).toLocaleDateString()}
-              </p>
-            </Link>
-          ))
-        }
-      </div>
-    </main>
+    <div className="container mx-auto p-4">
+      <header className="py-6 flex justify-between items-center">
+        <Link href="/">
+          <h1 className="text-4xl font-bold">My Blog</h1>
+        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/search" className="text-blue-500 hover:underline">
+            Search
+          </Link>
+          <ThemeToggleButton />
+        </div>
+      </header>
+      <main>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {
+            posts.map((post: any) => (
+              <Link
+                key={post.slug.current}
+                href={`/post/${post.slug.current}`}
+                className="block bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors overflow-hidden"
+              >
+                {post.mainImage && (
+                  <img
+                    src={urlFor(post.mainImage).width(400).height(250).url()}
+                    alt={post.title}
+                    className="w-full h-48 object-cover"
+                  />
+                )}
+                <div className="p-6">
+                  <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
+                  <p className="text-gray-400 mb-4">{new Date(post.publishedAt).toLocaleDateString()}</p>
+                  <p className="text-gray-300">{post.excerpt}</p>
+                </div>
+              </Link>
+            ))
+          }
+        </div>
+      </main>
+    </div>
   )
 }
