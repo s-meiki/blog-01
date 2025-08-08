@@ -4,8 +4,15 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { client } from '@/sanity/client'
 
+interface Post {
+  title: string;
+  slug: { current: string };
+  publishedAt: string;
+  excerpt: string;
+}
+
 export default function SearchPage() {
-  const [posts, setPosts] = useState<any[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
   const [query, setQuery] = useState('')
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,7 +26,7 @@ export default function SearchPage() {
         "publishedAt": publishedAt,
         excerpt
       }`,
-      { query: `*${query}*` }
+      { query: `*${query}*` } as Record<string, string>
     )
     setPosts(result)
   }
@@ -43,7 +50,7 @@ export default function SearchPage() {
           </button>
         </form>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post: any) => (
+          {posts.map((post: Post) => (
             <Link
               key={post.slug.current}
               href={`/post/${post.slug.current}`}

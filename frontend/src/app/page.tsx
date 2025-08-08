@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { client } from '@/sanity/client'
 import { ThemeToggleButton } from '@/components/ThemeToggleButton'
@@ -5,7 +6,7 @@ import imageUrlBuilder from '@sanity/image-url'
 
 const builder = imageUrlBuilder(client)
 
-function urlFor(source: any) {
+function urlFor(source: string) {
   return builder.image(source)
 }
 
@@ -39,16 +40,18 @@ export default async function Home() {
       <main>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {
-            posts.map((post: any) => (
+            posts.map((post: { slug: { current: string }; mainImage: string; title: string; publishedAt: string; excerpt: string }) => (
               <Link
                 key={post.slug.current}
                 href={`/post/${post.slug.current}`}
                 className="block bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors overflow-hidden"
               >
                 {post.mainImage && (
-                  <img
+                  <Image
                     src={urlFor(post.mainImage).width(400).height(250).url()}
                     alt={post.title}
+                    width={400}
+                    height={250}
                     className="w-full h-48 object-cover"
                   />
                 )}
