@@ -19,7 +19,7 @@
     "@sanity/visual-editing": "^3.0.1",
     "autoprefixer": "^10.4.21",
     "next": "^15.1",
-    "next-sanity": "^10.0.7",
+    "next-sanity": "^10.0.10",
     "next-themes": "^0.4.6",
     "react": "^19",
     "react-dom": "^19",

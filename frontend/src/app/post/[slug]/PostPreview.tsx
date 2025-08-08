@@ -1,12 +1,14 @@
 'use client'
 
-import { PostPage } from './PostPage'
+import { useLiveQuery } from 'next-sanity/preview'
+
+import PostPage from './PostPage'
 import { PostType } from '@/types/PostType'
 
-export function PostPreview({ post: initialPost }: { post: PostType }) {
-  // Live preview functionality is temporarily disabled to resolve build errors.
-  // If live preview is required, please refer to the latest Sanity documentation for Next.js 15.
-  const post = initialPost
+export default function PostPreview({ post }: { post: PostType }) {
+  const [data] = useLiveQuery(post, `*[_type == "post" && slug.current == $slug][0]`, {
+    slug: post.slug.current,
+  })
 
-  return <PostPage post={post} />
+  return <PostPage post={data} />
 }

@@ -1,6 +1,9 @@
 import { draftMode } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+import { client } from '@/sanity/client'
+import { token } from '@/sanity/token'
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const secret = searchParams.get('secret')
@@ -10,11 +13,13 @@ export async function GET(request: Request) {
     return new Response('Invalid secret', { status: 401 })
   }
 
-  if (!slug) {
-    return new Response('Missing slug', { status: 400 })
-  }
+  const { isEnabled } = draftMode()
 
-  (await draftMode()).enable()
+  if (isEnabled) {
+    draftMode().disable()
+  } else {
+    draftMode().enable()
+  }
 
   redirect(`/post/${slug}`)
 }

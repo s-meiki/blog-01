@@ -3,6 +3,7 @@ import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 import {presentationTool} from 'sanity/presentation'
+import {resolveProductionUrl} from './resolve-production-url'
 
 export default defineConfig({
   name: 'default',
@@ -15,9 +16,8 @@ export default defineConfig({
     structureTool(),
     visionTool(),
     presentationTool({
-      previewUrl: {
-        origin: 'http://localhost:3000',
-        preview: (document) => `/post/${document.slug.current}`,
+      resolve: {
+        previewUrl: resolveProductionUrl,
       },
     }),
   ],
