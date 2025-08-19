@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #0b1220;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+a {
+  @apply text-brand hover:underline underline-offset-4;
+}
+
+.container {
+  @apply mx-auto max-w-6xl px-4;
+}
+
