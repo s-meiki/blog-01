@@ -6,7 +6,7 @@ export const postsQuery = `
   excerpt,
   publishedAt,
   updatedAt,
-  'coverImage': coverImage.asset->url,
+  'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url),
   categories[]->{ _id, title, 'slug': slug.current, description },
   tags[]->{ _id, title, 'slug': slug.current, description }
 }`;
@@ -18,7 +18,7 @@ export const latestPostsQuery = `
   'slug': slug.current,
   excerpt,
   publishedAt,
-  'coverImage': coverImage.asset->url
+  'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url)
 }`;
 
 export const postBySlugQuery = `
@@ -29,10 +29,10 @@ export const postBySlugQuery = `
   excerpt,
   publishedAt,
   updatedAt,
-  'coverImage': coverImage.asset->url,
+  'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url),
   categories[]->{ _id, title, 'slug': slug.current },
   tags[]->{ _id, title, 'slug': slug.current },
-  content
+  'content': coalesce(content, body)
 }`;
 
 export const allSlugsQuery = `*[_type == "post" && defined(slug.current)].slug.current`;
@@ -44,7 +44,7 @@ export const postsByCategoryQuery = `
   'slug': slug.current,
   excerpt,
   publishedAt,
-  'coverImage': coverImage.asset->url
+  'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url)
 }`;
 
 export const postsByTagQuery = `
@@ -54,13 +54,13 @@ export const postsByTagQuery = `
   'slug': slug.current,
   excerpt,
   publishedAt,
-  'coverImage': coverImage.asset->url
+  'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url)
 }`;
 
 export const profileQuery = `
 *[_type == "profile"][0]{
   name,
-  avatar,
+  'avatarUrl': avatar.asset->url,
   bio,
   twitter,
   instagram,

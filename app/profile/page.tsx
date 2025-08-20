@@ -29,9 +29,9 @@ export default async function ProfilePage() {
   return (
     <article className="prose max-w-none">
       <header className="not-prose mb-6 flex items-center gap-4">
-        {profile.avatar?.asset ? (
+        {profile.avatarUrl ? (
           <Image
-            src={profile.avatar.asset.url ?? ''}
+            src={profile.avatarUrl}
             alt={profile.name}
             width={96}
             height={96}

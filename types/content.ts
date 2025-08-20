@@ -27,7 +27,7 @@ export type Post = {
 
 export type Profile = {
   name: string;
-  avatar?: any;
+  avatarUrl?: string;
   bio?: any;
   twitter?: string;
   instagram?: string;
