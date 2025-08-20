@@ -1,33 +1,18 @@
 import Link from 'next/link';
 import { PostCard } from '@/components/PostCard';
 import type { Post } from '@/types/content';
+import { sanityFetch } from '@/lib/sanity/client';
+import { latestPostsQuery } from '@/lib/sanity/queries';
 
-const mockPosts: Post[] = [
-  {
-    _id: '1',
-    title: '初投稿：サイト立ち上げの背景と技術選定',
-    slug: 'hello-world',
-    excerpt: 'Next.js + Tailwind + Sanityで構築する理由と進め方。',
-    publishedAt: new Date().toISOString(),
-    coverImage: 'https://images.unsplash.com/photo-1527443224154-c4f2a9f2c751?q=80&w=1600&auto=format&fit=crop'
-  },
-  {
-    _id: '2',
-    title: '運用方針：更新頻度・カテゴリ設計・SEOの考え方',
-    slug: 'operations-and-seo',
-    excerpt: 'サイトを資産化するための運用ガイドライン。',
-    publishedAt: new Date().toISOString()
-  },
-  {
-    _id: '3',
-    title: 'SSG/ISRで高速＆柔軟なブログを作る',
-    slug: 'ssg-isr-best-practices',
-    excerpt: 'Incremental Static Regenerationの活用ポイントまとめ。',
-    publishedAt: new Date().toISOString()
+export const revalidate = 60;
+
+export default async function HomePage() {
+  let latest: Post[] = [];
+  try {
+    latest = (await sanityFetch<Post[]>(latestPostsQuery, {}, 60)) || [];
+  } catch (e) {
+    latest = [];
   }
-];
-
-export default function HomePage() {
   return (
     <>
       <section className="py-10">
@@ -75,7 +60,7 @@ export default function HomePage() {
       <section className="py-6">
         <h2 className="text-xl font-semibold">最新記事</h2>
         <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {mockPosts.map((p) => (
+          {latest.map((p) => (
             <PostCard key={p._id} post={p} />
           ))}
         </div>
@@ -106,4 +91,3 @@ export default function HomePage() {
     </>
   );
 }
-

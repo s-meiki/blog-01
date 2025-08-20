@@ -2,20 +2,22 @@ import Link from 'next/link';
 import { PostCard } from '@/components/PostCard';
 import type { Post } from '@/types/content';
 import type { Metadata } from 'next';
+import { sanityFetch } from '@/lib/sanity/client';
+import { postsQuery } from '@/lib/sanity/queries';
 
 export const metadata: Metadata = {
   title: 'ブログ'
 };
 
-const mockPosts: Post[] = Array.from({ length: 9 }).map((_, i) => ({
-  _id: `p${i}`,
-  title: `ダミー記事 ${i + 1}`,
-  slug: `dummy-${i + 1}`,
-  excerpt: 'カテゴリ/タグ/検索などは今後Sanity連携で実装。',
-  publishedAt: new Date().toISOString()
-}));
+export const revalidate = 60;
 
-export default function BlogIndexPage() {
+export default async function BlogIndexPage() {
+  let posts: Post[] = [];
+  try {
+    posts = (await sanityFetch<Post[]>(postsQuery, {}, 60)) || [];
+  } catch (e) {
+    posts = [];
+  }
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -25,7 +27,7 @@ export default function BlogIndexPage() {
         </Link>
       </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {mockPosts.map((p) => (
+        {posts.map((p) => (
           <PostCard key={p._id} post={p} />
         ))}
       </div>
@@ -38,4 +40,3 @@ export default function BlogIndexPage() {
     </div>
   );
 }
-

@@ -1,4 +1,8 @@
 import type { Metadata } from 'next';
+import { PostCard } from '@/components/PostCard';
+import type { Post } from '@/types/content';
+import { sanityFetch } from '@/lib/sanity/client';
+import { postsByTagQuery } from '@/lib/sanity/queries';
 
 type Params = { params: { tag: string } };
 
@@ -6,17 +10,18 @@ export function generateMetadata({ params }: Params): Metadata {
   return { title: `タグ: ${params.tag}` };
 }
 
-export default function TagPage({ params }: Params) {
+export const revalidate = 60;
+
+export default async function TagPage({ params }: Params) {
+  const posts = (await sanityFetch<Post[]>(postsByTagQuery, { slug: params.tag }, 60)) || [];
   return (
     <div>
       <h1 className="text-2xl font-bold">タグ: {params.tag}</h1>
-      <p className="mt-2 text-gray-600">このタグに属する記事一覧（ダミー）。</p>
-      <ul className="mt-6 list-disc pl-6">
-        <li>記事 A</li>
-        <li>記事 B</li>
-        <li>記事 C</li>
-      </ul>
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((p) => (
+          <PostCard key={p._id} post={p} />
+        ))}
+      </div>
     </div>
   );
 }
-

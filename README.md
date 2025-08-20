@@ -29,9 +29,39 @@ pnpm dev
 
 ## 次のタスク（マイルストーン）
 
-- Sanity プロジェクト作成とスキーマ定義（Post/Category/Tag/Profile）
-- `next-sanity` 導入と GROQ クエリ実装（SSG/ISR）
-- 検索ページとカテゴリ/タグのフィルタリング
-- OGP/JSON-LDの拡充、sitemap自動生成
-- Lighthouseでの継続的パフォーマンス確認
+-- Sanity プロジェクト作成とスキーマ定義（Post/Category/Tag/Profile）→ 実装済（Studioは `/studio`）
+-- `next-sanity` 導入と GROQ クエリ実装（SSG/ISR）→ 実装済（60秒ISR）
+-- 検索ページとカテゴリ/タグのフィルタリング → Sanity連携に差し替え予定
+-- OGP/JSON-LDの拡充、sitemap自動生成
+-- Lighthouseでの継続的パフォーマンス確認
 
+## Sanity 導入メモ
+
+1) 依存をインストール
+
+```
+pnpm i next-sanity sanity @sanity/image-url @portabletext/react groq
+```
+
+2) プロジェクトIDとDatasetを設定（Vercel環境変数にも同様にセット）
+
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=xxxx
+NEXT_PUBLIC_SANITY_DATASET=production
+```
+
+3) Studio を起動（ローカル）
+
+```
+pnpm dev  # /studio にアクセス
+```
+
+4) ドキュメント作成
+- Post / Category / Tag / Profile を作成
+- Post: title, slug, excerpt, coverImage, publishedAt, content など
+
+5) データ反映
+- トップ/ブログ一覧/記事ページがSanityデータを反映（ISR 60秒）
+
+6) Webhook (任意)
+- `SANITY_WEBHOOK_SECRET` を設定し、Sanity Webhook → `/api/revalidate` にPOSTで連携

@@ -1,4 +1,8 @@
 import type { Metadata } from 'next';
+import { PostCard } from '@/components/PostCard';
+import type { Post } from '@/types/content';
+import { sanityFetch } from '@/lib/sanity/client';
+import { postsByCategoryQuery } from '@/lib/sanity/queries';
 
 type Params = { params: { category: string } };
 
@@ -6,17 +10,18 @@ export function generateMetadata({ params }: Params): Metadata {
   return { title: `カテゴリー: ${params.category}` };
 }
 
-export default function CategoryPage({ params }: Params) {
+export const revalidate = 60;
+
+export default async function CategoryPage({ params }: Params) {
+  const posts = (await sanityFetch<Post[]>(postsByCategoryQuery, { slug: params.category }, 60)) || [];
   return (
     <div>
       <h1 className="text-2xl font-bold">カテゴリー: {params.category}</h1>
-      <p className="mt-2 text-gray-600">このカテゴリーに属する記事一覧（ダミー）。</p>
-      <ul className="mt-6 list-disc pl-6">
-        <li>記事 1</li>
-        <li>記事 2</li>
-        <li>記事 3</li>
-      </ul>
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((p) => (
+          <PostCard key={p._id} post={p} />
+        ))}
+      </div>
     </div>
   );
 }
-
