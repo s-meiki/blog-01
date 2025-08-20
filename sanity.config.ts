@@ -1,10 +1,10 @@
+
 'use client'
 
 /**
  * This configuration is used to for the Sanity Studio that’s mounted on the `/app/studio/[[...tool]]/page.tsx` route
  */
 
-import {visionTool} from '@sanity/vision'
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 
@@ -21,8 +21,7 @@ export default defineConfig({
   schema,
   plugins: [
     structureTool({structure}),
-    // Vision is for querying with GROQ from inside the Studio
-    // https://www.sanity.io/docs/the-vision-plugin
-    visionTool({defaultApiVersion: apiVersion}),
+    // Vision plugin is optional. It was causing a version mismatch with the installed `sanity`.
+    // If needed, add `import {visionTool} from '@sanity/vision'` and include it here.
   ],
 })
