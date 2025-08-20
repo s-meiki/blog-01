@@ -25,3 +25,11 @@ export type Post = {
   content?: string; // temporary placeholder
 };
 
+export type Profile = {
+  name: string;
+  avatar?: any;
+  bio?: any;
+  twitter?: string;
+  instagram?: string;
+  youtube?: string;
+};

@@ -57,3 +57,12 @@ export const postsByTagQuery = `
   'coverImage': coverImage.asset->url
 }`;
 
+export const profileQuery = `
+*[_type == "profile"][0]{
+  name,
+  avatar,
+  bio,
+  twitter,
+  instagram,
+  youtube
+}`;
