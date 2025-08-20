@@ -65,3 +65,12 @@ pnpm dev  # /studio にアクセス
 
 6) Webhook (任意)
 - `SANITY_WEBHOOK_SECRET` を設定し、Sanity Webhook → `/api/revalidate` にPOSTで連携
+
+### Sanity CLI スクリプト（package.json）
+
+- `pnpm sanity` … Sanity CLI ヘルプ
+- `pnpm sanity:login` … Sanity ログイン
+- `pnpm sanity:init` … プロジェクト初期化（既存 `sanity.config.ts` を選択）
+- `pnpm sanity:deploy` … Studio を Sanity Hosted にデプロイ
+- `pnpm sanity:whoami` … ログイン確認
+- `pnpm sanity:datasets` … データセット一覧

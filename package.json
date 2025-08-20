@@ -8,7 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "sanity": "sanity",
+    "sanity:login": "sanity login",
+    "sanity:init": "sanity init",
+    "sanity:deploy": "sanity deploy",
+    "sanity:whoami": "sanity whoami",
+    "sanity:datasets": "sanity datasets list"
   },
   "dependencies": {
     "next": "14.2.5",
