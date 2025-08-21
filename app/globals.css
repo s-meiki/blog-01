@@ -48,3 +48,6 @@ a {
 .toc li.lvl-3 {
   @apply pl-6;
 }
+.toc a.active {
+  @apply text-brand font-medium;
+}

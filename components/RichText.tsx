@@ -1,5 +1,6 @@
 import { PortableText, type PortableTextReactComponents } from '@portabletext/react';
 import Link from 'next/link';
+import { slugify } from '@/lib/slug';
 
 function plainTextFromChildren(value: any): string {
   // value.children is an array of spans with .text
@@ -7,14 +8,6 @@ function plainTextFromChildren(value: any): string {
   return children.map((c) => c?.text ?? '').join('');
 }
 
-function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .slice(0, 100);
-}
 
 const components: PortableTextReactComponents = {
   block: {

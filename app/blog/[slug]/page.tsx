@@ -6,6 +6,8 @@ import { notFound } from 'next/navigation';
 import { RichText } from '@/components/RichText';
 import { JsonLd } from '@/components/JsonLd';
 import { site } from '@/lib/siteConfig';
+import { slugify } from '@/lib/slug';
+import { TOC } from '@/components/TOC';
 
 type Params = { params: { slug: string } };
 
@@ -29,7 +31,7 @@ function extractHeadingsFromBlocks(blocks: any[]) {
     .map((b) => {
       const level = Number((b.style || 'h2').replace('h', '')) || 2;
       const text = (b.children || []).map((c: any) => c.text).join('');
-      const id = text.toLowerCase().replace(/\s+/g, '-');
+      const id = slugify(text);
       return { level, text, id };
     });
 }
@@ -65,16 +67,7 @@ export default async function BlogPostPage({ params }: Params) {
         公開日: {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('ja-JP') : '-'}
       </p>
 
-      <aside className="toc not-prose mt-6 rounded-lg border p-4">
-        <div className="font-semibold text-sm text-gray-700">目次</div>
-        <ul className="mt-2">
-          {headings.map((h) => (
-            <li key={h.id} className={h.level === 1 ? '' : h.level === 2 ? 'lvl-2' : 'lvl-3'}>
-              <a href={`#${h.id}`}>{h.text}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
+      <TOC headings={headings} />
 
       <div className="mt-6">
         <RichText value={post.content} />
