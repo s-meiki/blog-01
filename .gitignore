@@ -9,9 +9,12 @@ out
 .env
 .env.local
 
+# sanity hosted build outputs (should not be committed)
+dist
+.sanity
+
 # logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
