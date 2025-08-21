@@ -1,8 +1,9 @@
 
-'use client'
+// Sanity Studio configuration for Hosted Studio deployment
 
 /**
- * This configuration is used to for the Sanity Studio that’s mounted on the `/app/studio/[[...tool]]/page.tsx` route
+ * This configuration is used for the Sanity Studio (Hosted Studio).
+ * Deploy with: `pnpm sanity:deploy`
  */
 
 import {defineConfig} from 'sanity'

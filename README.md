@@ -50,11 +50,16 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=xxxx
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-3) Studio を起動（ローカル）
+3) Studio（管理画面）
+
+- 推奨: Hosted Studio を利用（本サイトとは別URL）
 
 ```
-pnpm dev  # /studio にアクセス
+pnpm sanity:login   # 初回のみ
+pnpm sanity:deploy  # StudioをSanityにデプロイ → URL発行
 ```
+
+- 以降は発行されたURLから管理（記事/カテゴリ/タグ/プロフィールの作成・編集）
 
 4) ドキュメント作成
 - Post / Category / Tag / Profile を作成
@@ -74,6 +79,6 @@ pnpm dev  # /studio にアクセス
 - `pnpm sanity` … Sanity CLI ヘルプ
 - `pnpm sanity:login` … Sanity ログイン
 - `pnpm sanity:init` … プロジェクト初期化（既存 `sanity.config.ts` を選択）
-- `pnpm sanity:deploy` … Studio を Sanity Hosted にデプロイ
+- `pnpm sanity:deploy` … Studio を Sanity Hosted にデプロイ（推奨）
 - `pnpm sanity:whoami` … ログイン確認
 - `pnpm sanity:datasets` … データセット一覧
