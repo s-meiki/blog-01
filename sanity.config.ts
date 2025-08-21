@@ -7,16 +7,14 @@
  */
 
 import {defineConfig} from 'sanity'
-// No extra plugins for Hosted Studio to minimize version mismatches
 
-// Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
-import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schemaTypes/index'
 
 export default defineConfig({
-  basePath: '/studio',
-  projectId,
-  dataset,
+  // Hosted Studio config (independent of Next.js env).
+  // It is safe to keep these public values here.
+  projectId: 'tgkpx8zk',
+  dataset: 'production',
   // Add and edit the content schema in the './sanity/schemaTypes' folder
   schema,
   plugins: [],
