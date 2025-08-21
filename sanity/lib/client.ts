@@ -1,10 +1,13 @@
 import { createClient } from 'next-sanity'
 
-import { apiVersion, dataset, projectId } from '../env'
+// Use explicit values so Hosted Studio does not rely on Next.js env
+const projectId = 'tgkpx8zk'
+const dataset = 'production'
+const apiVersion = '2025-08-20'
 
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
+  useCdn: true,
 })
