@@ -4,6 +4,8 @@ import { sanityFetch } from '@/lib/sanity/client';
 import { allSlugsQuery, postBySlugQuery } from '@/lib/sanity/queries';
 import { notFound } from 'next/navigation';
 import { RichText } from '@/components/RichText';
+import { JsonLd } from '@/components/JsonLd';
+import { site } from '@/lib/siteConfig';
 
 type Params = { params: { slug: string } };
 
@@ -38,6 +40,22 @@ export default async function BlogPostPage({ params }: Params) {
   const headings = extractHeadingsFromBlocks(post.content);
   return (
     <article className="prose max-w-none">
+      <JsonLd
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: post.title,
+          datePublished: post.publishedAt,
+          dateModified: post.updatedAt || post.publishedAt,
+          author: { '@type': 'Person', name: site.author },
+          mainEntityOfPage: `${site.url.replace(/\/$/, '')}/blog/${post.slug}`,
+          image: post.coverImage ? [post.coverImage] : undefined,
+          keywords: Array.isArray(post.tags) ? post.tags.map((t: any) => t.title) : undefined,
+          articleSection: Array.isArray(post.categories)
+            ? post.categories.map((c: any) => c.title)
+            : undefined
+        }}
+      />
       <nav aria-label="breadcrumb" className="mb-4 text-sm">
         <Link href="/">ホーム</Link> / <Link href="/blog">ブログ</Link> /
         <span className="text-gray-600"> {post.title}</span>
