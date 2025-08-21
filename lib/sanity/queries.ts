@@ -66,3 +66,15 @@ export const profileQuery = `
   instagram,
   youtube
 }`;
+
+export const searchPostsQuery = `
+*[_type == "post" && defined(slug.current) && (
+  title match $q || pt::text(coalesce(content, body)) match $q
+)] | order(publishedAt desc)[0...50] {
+  _id,
+  title,
+  'slug': slug.current,
+  excerpt,
+  publishedAt,
+  'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url)
+}`;
