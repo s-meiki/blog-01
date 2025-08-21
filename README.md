@@ -61,6 +61,14 @@ pnpm sanity:deploy  # StudioをSanityにデプロイ → URL発行
 
 - 以降は発行されたURLから管理（記事/カテゴリ/タグ/プロフィールの作成・編集）
 
+4) Studio URL を記録（任意）
+
+- `.env.local` に発行されたURLを記録しておくとチーム共有が容易です。
+
+```
+SANITY_STUDIO_URL=https://<your-project>.sanity.studio
+```
+
 4) ドキュメント作成
 - Post / Category / Tag / Profile を作成
 - Post: title, slug, excerpt, coverImage, publishedAt, content など
