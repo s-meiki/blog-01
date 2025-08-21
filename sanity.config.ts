@@ -7,12 +7,11 @@
  */
 
 import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
+// No extra plugins for Hosted Studio to minimize version mismatches
 
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schemaTypes/index'
-import structure from './sanity/structure'
 
 export default defineConfig({
   basePath: '/studio',
@@ -20,9 +19,5 @@ export default defineConfig({
   dataset,
   // Add and edit the content schema in the './sanity/schemaTypes' folder
   schema,
-  plugins: [
-    structureTool({structure}),
-    // Vision plugin is optional. It was causing a version mismatch with the installed `sanity`.
-    // If needed, add `import {visionTool} from '@sanity/vision'` and include it here.
-  ],
+  plugins: [],
 })
