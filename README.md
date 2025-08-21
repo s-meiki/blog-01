@@ -65,6 +65,9 @@ pnpm dev  # /studio にアクセス
 
 6) Webhook (任意)
 - `SANITY_WEBHOOK_SECRET` を設定し、Sanity Webhook → `/api/revalidate` にPOSTで連携
+  - 推奨: URLに `?secret=YOUR_SECRET` を付ける or ヘッダ `X-Sanity-Signature: YOUR_SECRET`
+  - Payload: デフォルトの `documentId` または `ids.updated/created/deleted` に対応
+  - Revalidate対象: `/`, `/blog`, `/blog/[slug]`, `/blog/category/[slug]`, `/blog/tag/[slug]`, `/profile`
 
 ### Sanity CLI スクリプト（package.json）
 

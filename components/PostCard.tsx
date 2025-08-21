@@ -4,7 +4,7 @@ import type { Post } from '@/types/content';
 
 export function PostCard({ post }: { post: Post }) {
   return (
-    <article className="group rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition">
+    <article className="group rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition bg-white">
       {post.coverImage ? (
         <div className="relative aspect-[16/9]">
           <Image
@@ -23,11 +23,25 @@ export function PostCard({ post }: { post: Post }) {
           </Link>
         </h3>
         {post.excerpt ? <p className="mt-2 text-sm text-gray-600">{post.excerpt}</p> : null}
-        <div className="mt-3 text-xs text-gray-500">
+        <div className="mt-3 flex items-center gap-2">
+          {Array.isArray(post.categories) && post.categories?.length ? (
+            <div className="flex flex-wrap gap-1">
+              {post.categories.slice(0, 2).map((c) => (
+                <Link
+                  key={c._id}
+                  href={`/blog/category/${c.slug}`}
+                  className="rounded bg-brand-light px-2 py-0.5 text-[11px] text-brand"
+                >
+                  {c.title}
+                </Link>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        <div className="mt-2 text-xs text-gray-500">
           <time dateTime={post.publishedAt}>{new Date(post.publishedAt).toLocaleDateString('ja-JP')}</time>
         </div>
       </div>
     </article>
   );
 }
-
