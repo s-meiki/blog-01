@@ -14,7 +14,8 @@
     "sanity:init": "sanity init",
     "sanity:deploy": "sanity deploy",
     "sanity:whoami": "sanity whoami",
-    "sanity:datasets": "sanity datasets list"
+    "sanity:datasets": "sanity datasets list",
+    "studio:open": "node -e \"const u=process.env.SANITY_STUDIO_URL; if(!u){console.error('Set SANITY_STUDIO_URL in .env.local'); process.exit(1)}; const {exec}=require('child_process'); const cmd=process.platform==='darwin'?`open ${u}`:process.platform==='win32'?`start ${u}`:`xdg-open ${u}`; exec(cmd);\""
   },
   "dependencies": {
     "@portabletext/react": "3.2.0",

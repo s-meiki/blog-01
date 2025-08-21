@@ -1,5 +1,9 @@
 # めいき氏 公式サイト & ブログ（Next.js + Tailwind + Sanity）
 
+管理画面（Hosted Studio）: https://your-project.sanity.studio
+
+※ 上記URLは `pnpm sanity:deploy` 実行後に発行される実URLへ置き換えてください（`.env.local` の `SANITY_STUDIO_URL` にも保存推奨）。
+
 ## セットアップ
 
 1. 依存パッケージをインストール
@@ -90,3 +94,4 @@ SANITY_STUDIO_URL=https://<your-project>.sanity.studio
 - `pnpm sanity:deploy` … Studio を Sanity Hosted にデプロイ（推奨）
 - `pnpm sanity:whoami` … ログイン確認
 - `pnpm sanity:datasets` … データセット一覧
+- `pnpm studio:open` … `.env.local` の `SANITY_STUDIO_URL` をブラウザで開く
