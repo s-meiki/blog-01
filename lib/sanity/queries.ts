@@ -5,7 +5,7 @@ export const postsQuery = `
   'slug': slug.current,
   excerpt,
   publishedAt,
-  updatedAt,
+  'updatedAt': coalesce(updatedAt, _updatedAt),
   'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url),
   categories[]->{ _id, title, 'slug': slug.current, description },
   tags[]->{ _id, title, 'slug': slug.current, description }
@@ -28,7 +28,7 @@ export const postBySlugQuery = `
   'slug': slug.current,
   excerpt,
   publishedAt,
-  updatedAt,
+  'updatedAt': coalesce(updatedAt, _updatedAt),
   'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url),
   categories[]->{ _id, title, 'slug': slug.current },
   tags[]->{ _id, title, 'slug': slug.current },

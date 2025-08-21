@@ -9,7 +9,9 @@ export const postType = defineType({
   fields: [
     defineField({
       name: 'title',
+      title: 'Title',
       type: 'string',
+      validation: (r) => r.required()
     }),
     defineField({
       name: 'slug',
@@ -17,11 +19,19 @@ export const postType = defineType({
       options: {
         source: 'title',
       },
+      validation: (r) => r.required()
     }),
     defineField({
       name: 'author',
       type: 'reference',
       to: {type: 'author'},
+    }),
+    defineField({
+      name: 'excerpt',
+      title: 'Excerpt',
+      type: 'text',
+      rows: 3,
+      description: '一覧やOGPで使う短い要約（120〜160文字推奨）'
     }),
     defineField({
       name: 'mainImage',
@@ -43,8 +53,15 @@ export const postType = defineType({
       of: [defineArrayMember({type: 'reference', to: {type: 'category'}})],
     }),
     defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [defineArrayMember({ type: 'reference', to: { type: 'tag' } })],
+    }),
+    defineField({
       name: 'publishedAt',
       type: 'datetime',
+      initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: 'body',

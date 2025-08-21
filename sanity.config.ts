@@ -7,6 +7,8 @@
  */
 
 import {defineConfig} from 'sanity'
+import {deskTool} from 'sanity/desk'
+import {visionTool} from '@sanity/vision'
 
 import {schema} from './sanity/schemaTypes/index'
 
@@ -17,5 +19,5 @@ export default defineConfig({
   dataset: 'production',
   // Add and edit the content schema in the './sanity/schemaTypes' folder
   schema,
-  plugins: [],
+  plugins: [deskTool(), visionTool({ defaultApiVersion: '2024-08-01' })],
 })
