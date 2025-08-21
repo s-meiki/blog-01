@@ -25,3 +25,26 @@ a {
   @apply mx-auto max-w-6xl px-4;
 }
 
+/* Headings anchor offset when jumping via TOC */
+.prose h1,
+.prose h2,
+.prose h3 {
+  scroll-margin-top: 6rem;
+}
+
+/* Table of contents styling */
+.toc {
+  @apply text-sm bg-white;
+}
+.toc ul {
+  @apply space-y-1 list-none pl-0;
+}
+.toc a {
+  @apply text-gray-700 hover:text-brand hover:underline underline-offset-4;
+}
+.toc li.lvl-2 {
+  @apply pl-3;
+}
+.toc li.lvl-3 {
+  @apply pl-6;
+}

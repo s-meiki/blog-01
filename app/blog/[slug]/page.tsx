@@ -65,14 +65,12 @@ export default async function BlogPostPage({ params }: Params) {
         公開日: {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('ja-JP') : '-'}
       </p>
 
-      <aside className="not-prose mt-6 rounded-lg border p-4">
-        <div className="font-semibold">目次</div>
-        <ul className="mt-2 space-y-1 text-sm">
+      <aside className="toc not-prose mt-6 rounded-lg border p-4">
+        <div className="font-semibold text-sm text-gray-700">目次</div>
+        <ul className="mt-2">
           {headings.map((h) => (
-            <li key={h.id} className={h.level === 1 ? '' : h.level === 2 ? 'pl-3' : 'pl-6'}>
-              <a href={`#${h.id}`} className="underline">
-                {h.text}
-              </a>
+            <li key={h.id} className={h.level === 1 ? '' : h.level === 2 ? 'lvl-2' : 'lvl-3'}>
+              <a href={`#${h.id}`}>{h.text}</a>
             </li>
           ))}
         </ul>
