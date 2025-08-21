@@ -15,7 +15,8 @@
     "sanity:deploy": "sanity deploy",
     "sanity:whoami": "sanity whoami",
     "sanity:datasets": "sanity datasets list",
-    "studio:open": "node scripts/open-studio.mjs"
+    "studio:open": "node scripts/open-studio.mjs",
+    "studio:fix": "bash scripts/fix-studio.sh"
   },
   "dependencies": {
     "@portabletext/react": "3.2.0",
