@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sanityClient } from '@/lib/sanity/client';
+import { getSanityClient } from '@/lib/sanity/client';
 import { sanityConfig } from '@/lib/sanity/config';
 import { allSlugsQuery } from '@/lib/sanity/queries';
 
@@ -12,10 +12,11 @@ export async function GET() {
   let sampleSlugs: string[] | null = null;
   let error: string | null = null;
 
-  if (hasProject) {
+  const client = getSanityClient();
+  if (hasProject && client) {
     try {
-      postCount = await sanityClient.fetch<number>('count(*[_type == "post"])');
-      const slugs = await sanityClient.fetch<string[]>(allSlugsQuery);
+      postCount = await client.fetch<number>('count(*[_type == "post"])');
+      const slugs = await client.fetch<string[]>(allSlugsQuery);
       sampleSlugs = Array.isArray(slugs) ? slugs.slice(0, 5) : null;
     } catch (e: any) {
       error = String(e?.message || e);
@@ -31,4 +32,3 @@ export async function GET() {
     error,
   });
 }
-

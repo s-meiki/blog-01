@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { sanityClient } from '@/lib/sanity/client';
+import { getSanityClient } from '@/lib/sanity/client';
 
 function getSecret(req: NextRequest) {
   const headerSig = req.headers.get('x-sanity-signature') || req.headers.get('X-Sanity-Signature');
@@ -19,8 +19,10 @@ async function getDocInfoById(id: string) {
       'tagSlugs': select(_type == 'post' => tags[]->slug.current, null)
     }
   `;
+  const client = getSanityClient();
+  if (!client) return null;
   try {
-    return await sanityClient.fetch(query, { id });
+    return await client.fetch(query, { id });
   } catch {
     return null;
   }
@@ -51,8 +53,9 @@ export async function POST(req: NextRequest) {
     paths.add('/blog');
 
     // Try to resolve document-specific paths
+    const client = getSanityClient();
     for (const id of ids) {
-      const info = await getDocInfoById(id);
+      const info = client ? await getDocInfoById(id) : null;
       if (!info) continue;
       if (info._type === 'post' && info.slug) {
         paths.add(`/blog/${info.slug}`);
