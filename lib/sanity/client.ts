@@ -1,7 +1,9 @@
 import { createClient, type ClientConfig } from 'next-sanity';
+import { draftMode } from 'next/headers';
 import { sanityConfig } from './config';
 
 let _client: ReturnType<typeof createClient> | null = null;
+let _clientPreview: ReturnType<typeof createClient> | null = null;
 
 function buildConfig(): ClientConfig | null {
   const { projectId, dataset, apiVersion, useCdn } = sanityConfig;
@@ -9,7 +11,15 @@ function buildConfig(): ClientConfig | null {
   return { projectId, dataset, apiVersion, useCdn, stega: false } as const;
 }
 
-export function getSanityClient() {
+export function getSanityClient(preview = false) {
+  if (preview) {
+    if (_clientPreview) return _clientPreview;
+    const cfg = buildConfig();
+    const token = process.env.SANITY_API_READ_TOKEN;
+    if (!cfg || !token) return null;
+    _clientPreview = createClient({ ...cfg, useCdn: false, token, perspective: 'previewDrafts' as any });
+    return _clientPreview;
+  }
   if (_client) return _client;
   const cfg = buildConfig();
   if (!cfg) return null;
@@ -18,7 +28,11 @@ export function getSanityClient() {
 }
 
 export async function sanityFetch<T>(query: string, params?: Record<string, unknown>, revalidateSeconds = 60) {
-  const client = getSanityClient();
+  let previewEnabled = false;
+  try {
+    previewEnabled = draftMode().isEnabled;
+  } catch {}
+  const client = getSanityClient(previewEnabled);
   if (!client) return null as unknown as T; // 未設定時はnullで返す
   try {
     return await client.fetch<T>(query, params ?? {}, { next: { revalidate: revalidateSeconds } });

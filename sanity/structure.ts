@@ -1,4 +1,6 @@
-import type {StructureResolver} from 'sanity/structure';
+import type {DefaultDocumentNodeResolver, StructureResolver} from 'sanity/structure';
+import Iframe from 'sanity-plugin-iframe-pane'
+import { resolvePreviewUrl } from './resolve-production-url'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -15,3 +17,19 @@ export const structure: StructureResolver = (S) =>
     ]);
 
 export default structure;
+
+export const defaultDocumentNode: DefaultDocumentNodeResolver = (S, {schemaType}) => {
+  if (schemaType === 'post') {
+    return S.document().views([
+      S.view.form(),
+      S.view
+        .component(Iframe)
+        .title('Preview')
+        .options({
+          url: (doc: any) => resolvePreviewUrl(doc),
+          reload: { button: true },
+        }),
+    ])
+  }
+  return S.document()
+}

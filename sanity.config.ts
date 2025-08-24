@@ -13,6 +13,7 @@ import {visionTool} from '@sanity/vision'
 import {schema} from './sanity/schemaTypes/index'
 import { resolveProductionUrl } from './sanity/resolve-production-url'
 import { viewOnSiteAction } from './sanity/view-on-site-action'
+import structure, { defaultDocumentNode } from './sanity/structure'
 
 export default defineConfig({
   // Hosted Studio config (independent of Next.js env).
@@ -21,7 +22,7 @@ export default defineConfig({
   dataset: 'production',
   // Add and edit the content schema in the './sanity/schemaTypes' folder
   schema,
-  plugins: [deskTool(), visionTool({ defaultApiVersion: '2024-08-01' })],
+  plugins: [deskTool({ structure, defaultDocumentNode }), visionTool({ defaultApiVersion: '2024-08-01' })],
   document: {
     // Show "Open preview" in the post editor to view the published page
     productionUrl: async (prev, { document }) => resolveProductionUrl(document),

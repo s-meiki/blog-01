@@ -98,6 +98,18 @@ SANITY_STUDIO_URL=https://<your-project>.sanity.studio
 - Devサーバー起動後に `http://localhost:3000/api/diag/sanity` を開くと、
   - `projectId` / `dataset`、`postCount`、`sampleSlugs`、`error` を返し、Sanity接続の状態を確認できます。
 
+8) Studio内プレビュー（編集中プレビューのタブ）
+- 依存追加（ローカルで `pnpm i` 必要）: `sanity-plugin-iframe-pane`
+- Postの編集画面に「Preview」タブを追加（`sanity/structure.ts`）
+- 仕組み: `SITE_URL` の `/api/draft?secret=...&slug=/blog/[slug]` をiframe表示
+- 必要な環境変数:
+  - `SANITY_PREVIEW_SECRET` … Preview用のシークレット
+  - `SANITY_API_READ_TOKEN` … Draftを読み取るためのRead Token（Editor以上の権限）
+  - `SITE_URL` … 本番URL（未設定時は `http://localhost:3000`）
+- Next側の対応:
+  - `app/api/draft/route.ts` で Draft Mode を有効化 → 対象ページにリダイレクト
+  - `lib/sanity/client.ts` は Draft Mode時に `previewDrafts` + Tokenでデータ取得（未設定でも通常表示）
+
 ### Sanity CLI スクリプト（package.json）
 
 - `pnpm sanity` … Sanity CLI ヘルプ
