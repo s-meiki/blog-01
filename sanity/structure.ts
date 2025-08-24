@@ -1,5 +1,5 @@
 import type {DefaultDocumentNodeResolver, StructureResolver} from 'sanity/structure';
-import Iframe from 'sanity-plugin-iframe-pane'
+import Iframe from './components/IframePane'
 import { resolvePreviewUrl } from './resolve-production-url'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet

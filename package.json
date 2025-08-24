@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@sanity/cli": "^4.5.0",
-    "sanity-plugin-iframe-pane": "^3.3.1",
     "@sanity/vision": "^3.2.0",
     "@tailwindcss/typography": "0.5.13",
     "@types/node": "20.11.30",
