@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
+    "dev:3000": "next dev -H 127.0.0.1 -p 3000",
+    "dev:3001": "next dev -H 127.0.0.1 -p 3001",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -16,7 +18,9 @@
     "sanity:whoami": "sanity whoami",
     "sanity:datasets": "sanity datasets list",
     "studio:open": "node scripts/open-studio.mjs",
-    "studio:fix": "bash scripts/fix-studio.sh"
+    "studio:fix": "bash scripts/fix-studio.sh",
+    "webhook:test": "bash scripts/test-webhook.sh",
+    "webhook:url": "node scripts/print-webhook-url.mjs"
   },
   "dependencies": {
     "@portabletext/react": "3.2.0",

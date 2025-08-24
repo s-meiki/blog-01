@@ -9,7 +9,7 @@ function plainTextFromChildren(value: any): string {
 }
 
 
-const components: PortableTextReactComponents = {
+const components: Partial<PortableTextReactComponents> = {
   block: {
     h1: ({ children, value }) => {
       const text = plainTextFromChildren(value);

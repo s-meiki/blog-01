@@ -85,6 +85,18 @@ SANITY_STUDIO_URL=https://<your-project>.sanity.studio
   - 推奨: URLに `?secret=YOUR_SECRET` を付ける or ヘッダ `X-Sanity-Signature: YOUR_SECRET`
   - Payload: デフォルトの `documentId` または `ids.updated/created/deleted` に対応
   - Revalidate対象: `/`, `/blog`, `/blog/[slug]`, `/blog/category/[slug]`, `/blog/tag/[slug]`, `/profile`
+  - 手順の目安:
+    - URL作成: `pnpm webhook:url`（ローカル/本番URLを表示。引数で本番ベースURL可: `pnpm webhook:url -- https://your.site`）
+    - 管理画面: Sanity Manage → Project → Webhooks → Add webhook
+      - HTTP method: POST / Content type: JSON
+      - URL: `https://your.site/api/revalidate?secret=...`（上記の出力を利用）
+      - Filter (GROQ): `(_type in ["post","category","tag","profile"]) && !(_id in path("drafts.**"))`
+      - Trigger on: Create / Update / Delete（Published のみ）
+      - 送信テスト: 例を送信して `200 OK` を確認
+
+7) 接続ヘルスチェック（ローカル）
+- Devサーバー起動後に `http://localhost:3000/api/diag/sanity` を開くと、
+  - `projectId` / `dataset`、`postCount`、`sampleSlugs`、`error` を返し、Sanity接続の状態を確認できます。
 
 ### Sanity CLI スクリプト（package.json）
 
@@ -95,3 +107,6 @@ SANITY_STUDIO_URL=https://<your-project>.sanity.studio
 - `pnpm sanity:whoami` … ログイン確認
 - `pnpm sanity:datasets` … データセット一覧
 - `pnpm studio:open` … `.env.local` の `SANITY_STUDIO_URL` をブラウザで開く
+- `pnpm webhook:test` … ローカル `/api/revalidate` にテストPOST（`.env.local` の `SANITY_WEBHOOK_SECRET` を利用）
+
+補足: `sanity/sanity.cli.ts` は環境変数 `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET` を参照するよう統一しています（無い場合は `tgkpx8zk` / `production`）。

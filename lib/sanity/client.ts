@@ -12,6 +12,10 @@ export const sanityClient = createClient({
 export async function sanityFetch<T>(query: string, params?: Record<string, unknown>, revalidateSeconds = 60) {
   const hasProject = Boolean(sanityConfig.projectId);
   if (!hasProject) return null as unknown as T; // 未設定時はnullで返す
-  return sanityClient.fetch<T>(query, params, { next: { revalidate: revalidateSeconds } });
+  try {
+    return await sanityClient.fetch<T>(query, params ?? {}, { next: { revalidate: revalidateSeconds } });
+  } catch (e) {
+    // ビルド/CIなどネットワーク不可の環境や一時的障害時はnullで握りつぶす
+    return null as unknown as T;
+  }
 }
-
