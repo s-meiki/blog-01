@@ -1,5 +1,15 @@
-const siteUrl = (process.env.SITE_URL || 'http://localhost:3000').replace(/\/$/, '');
-const previewSecret = process.env.SANITY_PREVIEW_SECRET || '';
+// Read Studio-safe envs first (exposed to Studio bundle), then fall back to server envs
+const siteUrl = (
+  process.env.SANITY_STUDIO_SITE_URL ||
+  process.env.SITE_URL ||
+  'http://localhost:3000'
+).replace(/\/$/, '')
+
+const previewSecret = (
+  process.env.SANITY_STUDIO_PREVIEW_SECRET ||
+  process.env.SANITY_PREVIEW_SECRET ||
+  ''
+);
 
 export function resolveProductionUrl(doc: any) {
   const slug: string | undefined = doc?.slug?.current || undefined;
