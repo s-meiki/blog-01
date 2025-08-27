@@ -35,7 +35,10 @@ export async function sanityFetch<T>(query: string, params?: Record<string, unkn
   const client = getSanityClient(previewEnabled);
   if (!client) return null as unknown as T; // 未設定時はnullで返す
   try {
-    return await client.fetch<T>(query, params ?? {}, { next: { revalidate: revalidateSeconds } });
+    const fetchOptions = previewEnabled
+      ? ({ cache: 'no-store' } as const)
+      : ({ next: { revalidate: revalidateSeconds } } as const);
+    return await client.fetch<T>(query, params ?? {}, fetchOptions as any);
   } catch (e) {
     // ビルド/CIなどネットワーク不可の環境や一時的障害時はnullで握りつぶす
     return null as unknown as T;
