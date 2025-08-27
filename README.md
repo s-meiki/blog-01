@@ -107,9 +107,10 @@ SANITY_STUDIO_URL=https://<your-project>.sanity.studio
     - `SANITY_PREVIEW_SECRET` … Preview用のシークレット
     - `SANITY_API_READ_TOKEN` … Draftを読み取るためのRead Token（Editor以上の権限）
     - `SITE_URL` … 本番URL（未設定時は `http://localhost:3000`）
-  - Studio（Hosted Studio）側（Studioバンドルへ露出される）
-    - `SANITY_STUDIO_PREVIEW_SECRET` … Studioが生成するURLに付与（上と同じ値推奨）
-    - `SANITY_STUDIO_SITE_URL` … 本番URL（末尾にパスを付けない、例: `https://example.com`）
+- Studio（Hosted Studio）側（Studioバンドルへ露出される）
+  - `SANITY_STUDIO_PREVIEW_SECRET` … Studioが生成するURLに付与（上と同じ値推奨）
+  - `SANITY_STUDIO_SITE_URL` … 本番URL（末尾にパスを付けない、例: `https://example.com`）
+  - `SANITY_STUDIO_VERCEL_BYPASS_TOKEN` … VercelのDeployment Protectionが有効な場合のバイパストークン（任意）
 - Next側の対応:
   - `app/api/draft/route.ts` で Draft Mode を有効化 → 対象ページにリダイレクト
   - `lib/sanity/client.ts` は Draft Mode時に `previewDrafts` + Tokenでデータ取得（未設定でも通常表示）
@@ -117,7 +118,7 @@ SANITY_STUDIO_URL=https://<your-project>.sanity.studio
 注意:
 - `SANITY_STUDIO_SITE_URL` はサイトのルートURLを指定（末尾に `/blog` などのパスを付けない）
 - Studioに環境変数を渡してデプロイする例:
-  - `SANITY_STUDIO_SITE_URL="https://example.com" SANITY_STUDIO_PREVIEW_SECRET="<secret>" pnpm sanity:deploy`
+  - `SANITY_STUDIO_SITE_URL="https://example.com" SANITY_STUDIO_PREVIEW_SECRET="<secret>" SANITY_STUDIO_VERCEL_BYPASS_TOKEN="<token>" pnpm sanity:deploy`
 
 ### Sanity CLI スクリプト（package.json）
 

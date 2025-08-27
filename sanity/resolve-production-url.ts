@@ -26,5 +26,13 @@ export function resolvePreviewUrl(doc: any) {
   const url = new URL(`${siteUrl}/api/draft`);
   if (previewSecret) url.searchParams.set('secret', previewSecret);
   url.searchParams.set('slug', target);
+  const bypass =
+    (process.env.SANITY_STUDIO_VERCEL_BYPASS_TOKEN as string | undefined) ||
+    (process.env.VERCEL_BYPASS_TOKEN as string | undefined) ||
+    ''
+  if (bypass) {
+    url.searchParams.set('x-vercel-protection-bypass', bypass)
+    url.searchParams.set('x-vercel-set-bypass-cookie', 'true')
+  }
   return url.toString();
 }
