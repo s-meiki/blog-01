@@ -4,6 +4,8 @@ import { draftMode } from 'next/headers'
 export async function GET(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get('secret') || ''
   const slug = req.nextUrl.searchParams.get('slug') || '/'
+  const bypass = req.nextUrl.searchParams.get('x-vercel-protection-bypass') || ''
+  const setBypass = req.nextUrl.searchParams.get('x-vercel-set-bypass-cookie') || ''
 
   const expected = process.env.SANITY_PREVIEW_SECRET || process.env.SANITY_WEBHOOK_SECRET || ''
   if (expected && secret !== expected) {
@@ -14,7 +16,10 @@ export async function GET(req: NextRequest) {
 
   const url = new URL(req.nextUrl)
   url.pathname = slug.startsWith('/') ? slug : `/${slug}`
-  url.search = ''
+  // Preserve Vercel bypass params on the redirected URL so that the cookie can be set
+  const params = new URLSearchParams()
+  if (bypass) params.set('x-vercel-protection-bypass', bypass)
+  if (setBypass) params.set('x-vercel-set-bypass-cookie', setBypass)
+  url.search = params.toString()
   return NextResponse.redirect(url)
 }
-
