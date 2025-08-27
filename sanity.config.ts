@@ -13,6 +13,7 @@ import {visionTool} from '@sanity/vision'
 import {schema} from './sanity/schemaTypes/index'
 import { resolveProductionUrl } from './sanity/resolve-production-url'
 import { viewOnSiteAction } from './sanity/view-on-site-action'
+import { viewDraftPreviewAction } from './sanity/view-draft-preview-action'
 import structure, { defaultDocumentNode } from './sanity/structure'
 
 export default defineConfig({
@@ -28,7 +29,7 @@ export default defineConfig({
     productionUrl: async (prev, { document }) => resolveProductionUrl(document),
     actions: (prev, ctx) => {
       if (ctx.schemaType === 'post') {
-        return [...prev, viewOnSiteAction]
+        return [...prev, viewOnSiteAction, viewDraftPreviewAction]
       }
       return prev
     },

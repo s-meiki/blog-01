@@ -23,13 +23,18 @@ export default function IframePane(props: Props) {
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-      {canReload && (
-        <div style={{padding: '8px', borderBottom: '1px solid #eee'}}>
+      <div style={{padding: '8px', borderBottom: '1px solid #eee', display: 'flex', gap: 8}}>
+        {canReload && (
           <button type="button" onClick={() => setSrc(computeUrl())}>
             Reload preview
           </button>
-        </div>
-      )}
+        )}
+        {src ? (
+          <button type="button" onClick={() => window.open(src, '_blank') }>
+            Open in new tab
+          </button>
+        ) : null}
+      </div>
       <div style={{flex: 1}}>
         {src ? (
           <iframe title="Preview" src={src} style={{border: 0, width: '100%', height: '100%'}} />
@@ -40,4 +45,3 @@ export default function IframePane(props: Props) {
     </div>
   )
 }
-
