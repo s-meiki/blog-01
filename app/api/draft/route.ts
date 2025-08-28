@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { draftMode } from 'next/headers'
 
 export async function GET(req: NextRequest) {
-  const secret = req.nextUrl.searchParams.get('secret') || ''
+  const secret =
+    req.nextUrl.searchParams.get('secret') ||
+    req.headers.get('x-sanity-signature') ||
+    req.headers.get('X-Sanity-Signature') ||
+    ''
   const slugParam = req.nextUrl.searchParams.get('slug') || ''
   const idParam = req.nextUrl.searchParams.get('id') || ''
   const bypass = req.nextUrl.searchParams.get('x-vercel-protection-bypass') || ''
