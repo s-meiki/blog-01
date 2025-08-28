@@ -35,6 +35,20 @@ export const postBySlugQuery = `
   'content': coalesce(content, body)
 }`;
 
+export const postByIdQuery = `
+*[_type == "post" && _id == $id][0] {
+  _id,
+  title,
+  'slug': slug.current,
+  excerpt,
+  publishedAt,
+  'updatedAt': coalesce(updatedAt, _updatedAt),
+  'coverImage': coalesce(coverImage.asset->url, mainImage.asset->url),
+  categories[]->{ _id, title, 'slug': slug.current },
+  tags[]->{ _id, title, 'slug': slug.current },
+  'content': coalesce(content, body)
+}`;
+
 export const allSlugsQuery = `*[_type == "post" && defined(slug.current)].slug.current`;
 
 export const postsByCategoryQuery = `
