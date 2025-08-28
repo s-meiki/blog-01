@@ -132,3 +132,40 @@ SANITY_STUDIO_URL=https://<your-project>.sanity.studio
 - `pnpm webhook:test` … ローカル `/api/revalidate` にテストPOST（`.env.local` の `SANITY_WEBHOOK_SECRET` を利用）
 
 補足: `sanity/sanity.cli.ts` は環境変数 `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET` を参照するよう統一しています（無い場合は `tgkpx8zk` / `production`）。
+
+## Preview専用Vercelプロジェクト（おすすめ運用）
+
+本番（Production）は保護ONのまま、Studioのプレビューは「保護なしのプレビュー用プロジェクト」に向けると、Studio内のタブで安定して実ページプレビューが見られます。
+
+1) Vercelで新規プロジェクトを作成（同じGitHub repoを接続）
+- プロジェクト名例: `blog-01-preview`
+- デフォルトの `*.vercel.app` ドメインでOK（独自ドメイン不要）
+
+2) 環境変数（Preview 環境に設定）
+- `NEXT_PUBLIC_SANITY_PROJECT_ID=tgkpx8zk`
+- `NEXT_PUBLIC_SANITY_DATASET=production`
+- `SANITY_PREVIEW_SECRET=<your-secret>`
+- `SANITY_API_READ_TOKEN=<sanity-read-token>`（Editor 権限以上）
+- `SITE_URL=https://<preview-project>.vercel.app`
+- （任意）`PREVIEW_NOINDEX=1` → `X-Robots-Tag: noindex` を付与
+
+3) デプロイ（初回）
+- Vercelのプロジェクト作成時に自動デプロイ → 完了後に `https://<preview-project>.vercel.app` が有効に
+
+4) StudioをプレビューURLで再デプロイ
+- ターミナルで（1行で）:
+```
+SANITY_STUDIO_SITE_URL="https://<preview-project>.vercel.app" \
+SANITY_STUDIO_PREVIEW_SECRET="<your-secret>" \
+pnpm sanity:deploy
+```
+- ログに `Including ... SANITY_STUDIO_SITE_URL / SANITY_STUDIO_PREVIEW_SECRET` が表示されることを確認
+
+5) 確認
+- Studioを `?v=ts` で開き直し → Post編集 → Previewタブ
+- iframe内で実ページレイアウトのプレビューがそのまま表示されます
+
+補足
+- 本番（既存プロジェクト）は保護ONのままでOK。公開前の安全性を担保
+- プレビュー用プロジェクトは `PREVIEW_NOINDEX=1` を付けて検索エンジンのインデックスを抑制可能
+- すでにアプリは Draft Mode + no-store / previewDrafts + token に対応済み
