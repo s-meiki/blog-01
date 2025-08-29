@@ -12,9 +12,12 @@ export async function GET(req: NextRequest) {
   const bypass = req.nextUrl.searchParams.get('x-vercel-protection-bypass') || ''
   const setBypass = req.nextUrl.searchParams.get('x-vercel-set-bypass-cookie') || ''
 
+  const noAuth = process.env.PREVIEW_NO_AUTH === '1'
   const expected = process.env.SANITY_PREVIEW_SECRET || process.env.SANITY_WEBHOOK_SECRET || ''
-  if (expected && secret !== expected) {
-    return NextResponse.json({ ok: false, message: 'Invalid secret' }, { status: 401 })
+  if (!noAuth) {
+    if (expected && secret !== expected) {
+      return NextResponse.json({ ok: false, message: 'Invalid secret' }, { status: 401 })
+    }
   }
 
   draftMode().enable()
