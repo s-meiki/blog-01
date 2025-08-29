@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { draftMode } from 'next/headers'
+import { getSanityClient } from '@/lib/sanity/client'
 
 export async function GET(req: NextRequest) {
   const secret =
