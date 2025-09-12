@@ -19,7 +19,26 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const post = await sanityFetch<any>(postBySlugQuery, { slug: params.slug }, 60);
   if (!post) return { title: params.slug };
-  return { title: post.title, description: post.excerpt };
+  const urlBase = site.url.replace(/\/$/, '');
+  const url = `${urlBase}/blog/${params.slug}`;
+  const ogImages = post.coverImage ? [{ url: post.coverImage }] : undefined;
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      type: 'article',
+      url,
+      title: post.title,
+      description: post.excerpt,
+      images: ogImages
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: post.coverImage ? [post.coverImage] : undefined
+    }
+  };
 }
 
 export const revalidate = 60;

@@ -39,6 +39,38 @@ pnpm dev
 -- OGP/JSON-LDの拡充、sitemap自動生成
 -- Lighthouseでの継続的パフォーマンス確認
 
+## 追加実装（このコミット）
+
+- ブログ一覧のページネーションを実装（`/blog` と `/blog/page/[page]`）。1ページあたり9件。
+  - クエリ: `paginatedPostsQuery`（総件数 + 指定範囲を取得）
+  - ISR: 60秒で再生成（記事追加時はWebhook経由の revalidate で即時更新可）
+- 記事詳細の OGP メタを強化
+  - `openGraph: article` と Twitter Card(large image) をカバー画像付きで出力
+- サイトマップの拡充
+  - Sanityの全記事スラッグを反映
+  - ページネーションのURL（`/blog/page/2` 以降）も出力
+  - カテゴリ/タグページ（`/blog/category/[slug]`, `/blog/tag/[slug]`）も出力
+  - カテゴリ/タグのページネーション（`/blog/category/[slug]/page/2` など）も出力
+
+### ページネーション仕様
+
+- 1ページ目: `/blog`
+- 2ページ目以降: `/blog/page/2`, `/blog/page/3`, ...
+- 1ページあたり: 9件（`PAGE_SIZE`）
+- 参照ファイル:
+  - `lib/sanity/queries.ts` … `paginatedPostsQuery`
+  - `app/blog/page.tsx` … 1ページ目の描画
+  - `app/blog/page/[page]/page.tsx` … 2ページ目以降の描画
+  - `app/sitemap.ts` … 記事URLとページネーションURLの出力
+  - カテゴリ別: `paginatedPostsByCategoryQuery`, `app/blog/category/[category]/page.tsx`, `app/blog/category/[category]/page/[page]/page.tsx`
+  - タグ別: `paginatedPostsByTagQuery`, `app/blog/tag/[tag]/page.tsx`, `app/blog/tag/[tag]/page/[page]/page.tsx`
+
+### 注意点
+
+- Sanity接続が未設定でもビルドが落ちないよう、取得失敗時は空配列/0件としてフォールバックします。
+- `site.url` はOGPやsitemapのベースURLに利用されます。公開時のドメインに更新してください。
+- 一覧ページには構造化データ（`ItemList`）を埋め込んでいます。
+
 ## Sanity 導入メモ
 
 1) 依存をインストール

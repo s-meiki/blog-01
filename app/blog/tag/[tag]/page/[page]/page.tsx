@@ -4,15 +4,20 @@ import { notFound } from 'next/navigation';
 import { PostCard } from '@/components/PostCard';
 import type { Post } from '@/types/content';
 import { sanityFetch } from '@/lib/sanity/client';
-import { paginatedPostsByCategoryQuery } from '@/lib/sanity/queries';
+import { paginatedPostsByTagQuery } from '@/lib/sanity/queries';
 import { JsonLd } from '@/components/JsonLd';
 import { site } from '@/lib/siteConfig';
 
-type Params = { params: { category: string } };
+export const revalidate = 60;
+
+const PAGE_SIZE = 9;
+
+type Params = { params: { tag: string; page: string } };
 
 export function generateMetadata({ params }: Params): Metadata {
-  const title = `カテゴリー: ${params.category}`;
-  const url = `${site.url.replace(/\/$/, '')}/blog/category/${params.category}`;
+  const n = Number(params.page) || 1;
+  const title = `タグ: ${params.tag} - ページ ${n}`;
+  const url = `${site.url.replace(/\/$/, '')}/blog/tag/${params.tag}/page/${n}`;
   return {
     title,
     openGraph: { type: 'website', url, title },
@@ -20,12 +25,8 @@ export function generateMetadata({ params }: Params): Metadata {
   };
 }
 
-export const revalidate = 60;
-
-const PAGE_SIZE = 9;
-
-export default async function CategoryPage({ params }: Params) {
-  const page = 1;
+export default async function TagPagedPage({ params }: Params) {
+  const page = Math.max(1, Number(params.page) || 1);
   const offset = (page - 1) * PAGE_SIZE;
   const end = offset + PAGE_SIZE;
 
@@ -33,8 +34,8 @@ export default async function CategoryPage({ params }: Params) {
   let total = 0;
   try {
     const res = (await sanityFetch<{ total: number; items: Post[] }>(
-      paginatedPostsByCategoryQuery,
-      { slug: params.category, offset, end },
+      paginatedPostsByTagQuery,
+      { slug: params.tag, offset, end },
       60
     )) || { total: 0, items: [] };
     items = Array.isArray(res.items) ? res.items : [];
@@ -45,7 +46,10 @@ export default async function CategoryPage({ params }: Params) {
   }
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  if (page > totalPages && total > 0) return notFound();
+  if ((page > totalPages && total > 0) || page < 1) return notFound();
+
+  const prevHref = page <= 2 ? `/blog/tag/${params.tag}` : `/blog/tag/${params.tag}/page/${page - 1}`;
+  const nextHref = `/blog/tag/${params.tag}/page/${page + 1}`;
 
   return (
     <div>
@@ -53,7 +57,7 @@ export default async function CategoryPage({ params }: Params) {
         schema={{
           '@context': 'https://schema.org',
           '@type': 'ItemList',
-          name: `カテゴリー: ${params.category}`,
+          name: `タグ: ${params.tag}`,
           itemListElement: items.map((p, i) => ({
             '@type': 'ListItem',
             position: i + 1,
@@ -61,7 +65,7 @@ export default async function CategoryPage({ params }: Params) {
           }))
         }}
       />
-      <h1 className="text-2xl font-bold">カテゴリー: {params.category}</h1>
+      <h1 className="text-2xl font-bold">タグ: {params.tag}</h1>
       <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((p) => (
           <PostCard key={p._id} post={p} />
@@ -69,9 +73,9 @@ export default async function CategoryPage({ params }: Params) {
       </div>
       <nav className="mt-8 flex items-center justify-center gap-4 text-sm" aria-label="pagination">
         <Link
-          href="#"
-          aria-disabled
-          className="rounded border px-3 py-1 pointer-events-none opacity-50"
+          href={page > 1 ? prevHref : '#'}
+          aria-disabled={page <= 1}
+          className={`rounded border px-3 py-1 ${page <= 1 ? 'pointer-events-none opacity-50' : ''}`}
         >
           前へ
         </Link>
@@ -79,9 +83,9 @@ export default async function CategoryPage({ params }: Params) {
           {page} / {totalPages}
         </span>
         <Link
-          href={totalPages > 1 ? `/blog/category/${params.category}/page/2` : '#'}
-          aria-disabled={totalPages <= 1}
-          className={`rounded border px-3 py-1 ${totalPages <= 1 ? 'pointer-events-none opacity-50' : ''}`}
+          href={page < totalPages ? nextHref : '#'}
+          aria-disabled={page >= totalPages}
+          className={`rounded border px-3 py-1 ${page >= totalPages ? 'pointer-events-none opacity-50' : ''}`}
         >
           次へ
         </Link>
@@ -89,3 +93,4 @@ export default async function CategoryPage({ params }: Params) {
     </div>
   );
 }
+

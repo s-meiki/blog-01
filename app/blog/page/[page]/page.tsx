@@ -1,24 +1,24 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PostCard } from '@/components/PostCard';
 import type { Post } from '@/types/content';
-import type { Metadata } from 'next';
 import { sanityFetch } from '@/lib/sanity/client';
 import { paginatedPostsQuery } from '@/lib/sanity/queries';
-import { JsonLd } from '@/components/JsonLd';
-import { site } from '@/lib/siteConfig';
-
-export const metadata: Metadata = {
-  title: 'ブログ'
-};
 
 export const revalidate = 60;
 
 const PAGE_SIZE = 9;
 
-export default async function BlogIndexPage() {
-  // ページ1として扱う
-  const page = 1;
+type Params = { params: { page: string } };
+
+export function generateMetadata({ params }: Params): Metadata {
+  const n = Number(params.page) || 1;
+  return { title: `ブログ - ページ ${n}` };
+}
+
+export default async function BlogPagedPage({ params }: Params) {
+  const page = Math.max(1, Number(params.page) || 1);
   const offset = (page - 1) * PAGE_SIZE;
   const end = offset + PAGE_SIZE;
 
@@ -38,22 +38,13 @@ export default async function BlogIndexPage() {
   }
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  if (page > totalPages && total > 0) return notFound();
+  if ((page > totalPages && total > 0) || page < 1) return notFound();
+
+  const prevHref = page <= 2 ? '/blog' : `/blog/page/${page - 1}`;
+  const nextHref = `/blog/page/${page + 1}`;
 
   return (
     <div>
-      <JsonLd
-        schema={{
-          '@context': 'https://schema.org',
-          '@type': 'ItemList',
-          name: 'ブログ一覧',
-          itemListElement: items.map((p, i) => ({
-            '@type': 'ListItem',
-            position: i + 1,
-            url: `${site.url.replace(/\/$/, '')}/blog/${p.slug}`
-          }))
-        }}
-      />
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">ブログ</h1>
         <Link href="/search" className="text-sm underline">
@@ -67,9 +58,9 @@ export default async function BlogIndexPage() {
       </div>
       <nav className="mt-8 flex items-center justify-center gap-4 text-sm" aria-label="pagination">
         <Link
-          href="#"
-          aria-disabled
-          className="rounded border px-3 py-1 pointer-events-none opacity-50"
+          href={page > 1 ? prevHref : '#'}
+          aria-disabled={page <= 1}
+          className={`rounded border px-3 py-1 ${page <= 1 ? 'pointer-events-none opacity-50' : ''}`}
         >
           前へ
         </Link>
@@ -77,9 +68,9 @@ export default async function BlogIndexPage() {
           {page} / {totalPages}
         </span>
         <Link
-          href={totalPages > 1 ? `/blog/page/2` : '#'}
-          aria-disabled={totalPages <= 1}
-          className={`rounded border px-3 py-1 ${totalPages <= 1 ? 'pointer-events-none opacity-50' : ''}`}
+          href={page < totalPages ? nextHref : '#'}
+          aria-disabled={page >= totalPages}
+          className={`rounded border px-3 py-1 ${page >= totalPages ? 'pointer-events-none opacity-50' : ''}`}
         >
           次へ
         </Link>
@@ -87,3 +78,4 @@ export default async function BlogIndexPage() {
     </div>
   );
 }
+
